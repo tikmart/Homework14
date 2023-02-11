@@ -1,16 +1,32 @@
 public class Printer {
+    int count = 1;
     int[] array;
-    Printer(int[] array){
-        this.array = array;
-    }
 
-    public synchronized static void print(int[] array){
-        for (int i = 0; i < array.length; i++) {
-            if (i < array.length - 1){
-                System.out.print(array[i] + ",");
+
+    public synchronized void print(int[] array, int c) {
+        boolean isType = false;
+
+        while (!isType) {
+            if (count != c) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
-                System.out.println(array[i]);
+                for (int i = 0; i < array.length; i++) {
+
+                    if (i < array.length - 1) {
+                        System.out.print(array[i] + ",");
+                    } else
+                        System.out.println(array[i]);
+
+                    isType = true;
+                }
             }
+
         }
+        count++;
+        notifyAll();
     }
 }
